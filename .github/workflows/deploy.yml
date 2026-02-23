@@ -1,0 +1,22 @@
+name: deploy
+
+on:
+  push:
+    branches: ["main"]
+  
+
+jobs:
+  deploy:
+
+    runs-on: ubuntu-latest
+
+    # use single version for faster CI
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Frontend Dependencies
+        working-directory: ./backend
+        run: docker build -t shaileshhegde19/clarity-githubaction
+      - run: echo "${{secrets.DOCKERHUB_PASSWORD}}" | docker login ghcr.io -u ${{secrets.DOCKERHUB_USERNAME}} --password-stdin
+      - run: docker push shaileshhegde19/clarity-githubaction:latest
+      
